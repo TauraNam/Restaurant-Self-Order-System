@@ -1,0 +1,315 @@
+/* AdminHeader */
+
+.admin-header {
+    width: 100%;
+    background-color: var(--admin-secondary-color);
+    height: 70px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.logout-button {
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: #4A4A4A;
+    color: var(--admin-primary-color);
+    font-size: 18px;
+    font-weight: bolder;
+    padding: 6px;
+}
+
+.logout-button:hover {
+    background-color: #1a1a1a;
+}
+
+/* Login, AddNewProduct, AddNewUser, ProductsEditForm, UsersEditForm */
+
+.login-form-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    max-width: 1440px;
+    /* TODO: double-check this in the future */
+    background-color: #f0f4f8
+}
+
+.login-form-styles {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    width: 450px;
+    border: none;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 6px 20px #0000001a;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 50px 30px;
+    width: 100%;
+}
+
+.form-styles {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+    box-shadow: 4px 4px 15px #0000001a;
+    border-radius: var(--border-radius);
+}
+
+.form-styles h2,
+.login-form-styles h2 {
+    font-size: 24px;
+    color: #4A4A4A;
+    margin-bottom: 20px;
+}
+
+.form-styles form,
+.login-form-styles form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-block {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+
+.form-styles input,
+.form-styles textarea,
+.login-form-styles input,
+header input {
+    padding: 5px 10px;
+    border-radius: var(--border-radius);
+    border: 1px solid #ccc;
+    margin: 5px 0;
+}
+
+.form-styles input:focus,
+.login-form-styles input:focus,
+header input:focus {
+    border-color: var(--admin-selected-color);
+    box-shadow: 0 0 8px var(--admin-selected-color);
+    outline: none;
+}
+
+.error-message {
+    color: #ff0000;
+    font-weight: bold;
+    text-align: center;
+    font-style: italic;
+}
+
+
+/* AdminPanel */
+
+.admin-panel-container {
+    display: flex;
+}
+
+/* AdminNavigation  */
+
+.navigation {
+    width: 20%;
+    max-width: 300px;
+    min-width: 200px;
+    min-height: 100vh;
+    background-color: var(--admin-primary-color);
+    box-shadow: 4px 4px 15px #0000001a
+}
+
+.admin-navbar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #efefef;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    width: 100%;
+    padding: 10px 30px;
+}
+
+.nav-link:hover {
+    color: #1a1a1a;
+    /* background-color: #7399c29c; TODO: spalva kai active? */
+}
+
+.nav-link:active {
+    transform: scale(0.95);
+}
+
+.nav-link-selected {
+    background-color: var(--admin-selected-color);
+    border-left: 5px solid #fff;
+    padding-left: 25px;
+}
+
+/* AdminProductsOverview */
+
+.table-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 40px 30px;
+    width: 100%;
+}
+
+.table-overview {
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+    box-shadow: 4px 4px 15px #0000001a;
+    background-color: #ffffff;
+    border-radius: var(--border-radius);
+}
+
+.table-overview th,
+.table-overview td {
+    padding: 10px 25px;
+    text-align: left;
+    border: none;
+}
+
+.table-overview th {
+    font-weight: bold;
+    color: #b2b4b9;
+}
+
+.table-overview td {
+    color: #676768;
+}
+
+.table-overview tbody tr:hover {
+    background-color: #e5e4e6;
+}
+
+.table-overview img {
+    width: 80px;
+}
+
+/* AdminProductOverview and AdminUsersOverview */
+
+.buttons-container {
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.button-styles {
+    text-decoration: none;
+    color: #efefef;
+    border: 1px solid #ccdef1;
+    border-radius: var(--border-radius);
+    padding: 10px;
+    margin-top: 5px;
+    background-color: var(--admin-primary-color);
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+}
+
+.button-styles:hover,
+
+.action-button-styles:hover {
+    background-color: var(--admin-secondary-color);
+}
+
+/* .action-button-styles {
+    padding: 6px;
+    background-color: var(--admin-primary-color);
+    border: 1px solid #ccdef1;;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    color:#efefef;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  } */
+
+.table-actions {
+    display: flex;
+    align-items: center;
+    height: 103px;
+    gap: 10px;
+}
+
+
+/* Orders */
+
+.icon-yes {
+    color: #008000;
+    font-size: 20px;
+  }
+  
+  .icon-no {
+    color: #ff0000;
+    font-size: 20px;
+  }
+  
+  .status-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-size: 14px; 
+    font-weight: 500;
+  }
+  
+  
+  .status-pending {
+    background-color: #e9d5ff;
+    color: #581c87;
+  }
+  
+  .status-approved {
+    background-color: #bfdbfe;
+    color: #1e40af;
+  }
+  
+  .status-declined {
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
+  
+  .status-in-process {
+    background-color: #fef9c3;
+    color: #713f12;
+  }
+  
+  .status-completed {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+
+
+
+  /* OrderStatusFilter */
+
+  .active {
+    background-color: #3c184a;
+  }
