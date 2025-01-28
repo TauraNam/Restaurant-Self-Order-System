@@ -7,16 +7,28 @@ const orderSchema = new Schema({
         required: true
     },
     products: [{
-        product: { 
-            type: mongoose.Schema.Types.ObjectId, 
-            ref: 'Products',
+        product: {
+            type: String,
             required: true
         },
-        quantity: { 
-            type: Number, 
-            required: true 
+        quantity: {
+            type: Number,
+            required: true
         }
     }],
+    notes: {
+        type: String,
+        maxlength: 250,
+    },
+    orderPrice: {
+        type: Number,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ["Pending", "Approved", "Declined", "In-process", "Completed"],
+        required: true
+    }
 }, { timestamps: true })
 
 export default mongoose.model('Order', orderSchema)

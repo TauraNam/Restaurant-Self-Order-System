@@ -27,11 +27,14 @@ export const getOrder = async (req, res) => {
 }
 
 export const createOrder = async (req, res) => {
-    const { tableNumber, products } = req.body
+    const { tableNumber, products, notes, orderPrice, status } = req.body
 
     let emptyFields = [];
-    if (!tableNumber) { emptyFields.push('tableNumber'); }
+    if (!tableNumber) { emptyFields.push('tableNumber') }
     if (!products || products.length === 0) { emptyFields.push('products') }
+    if (!orderPrice) { emptyFields.push('orderPrice') }
+    if (!status) { emptyFields.push('status') }
+
 
     if (products) {
         products.forEach((item, index) => {
@@ -47,9 +50,16 @@ export const createOrder = async (req, res) => {
 
     try {
         const productsExist = await checkProductsExist(products)
+        if (productsExist === false) {
+            throw new Error('Products not found')
+        }
+
         const order = await OrdersModel.create({
             tableNumber,
-            products
+            products,
+            notes,
+            orderPrice,
+            status
         })
 
         res.status(201).json(order)
@@ -59,19 +69,19 @@ export const createOrder = async (req, res) => {
 };
 
 
-export const updateOrder = 
+export const updateOrder =
     async (req, res) => {
-    const { id } = req.params
-    if (mongoose.Types.ObjectId.isValid(id) === false) {
-        return res.status(404).json({ error: 'Order not found.' })
+        const { id } = req.params
+        if (mongoose.Types.ObjectId.isValid(id) === false) {
+            return res.status(404).json({ error: 'Order not found.' })
+        }
+        const order = await OrdersModel.findOneAndUpdate({ _id: id }, { ...req.body })
+        if (order) {
+            res.status(200).json(order)
+        } else {
+            return res.status(404).json({ error: 'Order not found.' })
+        }
     }
-    const order = await OrdersModel.findOneAndUpdate({ _id: id }, { ...req.body })
-    if (order) {
-        res.status(200).json(order)
-    } else {
-        return res.status(404).json({ error: 'Order not found.' })
-    }
-}
 
 export const deleteOrder = async (req, res) => {
     const { id } = req.params
@@ -81,6 +91,19 @@ export const deleteOrder = async (req, res) => {
     const order = await OrdersModel.findOneAndDelete({ _id: id })
     if (order) {
         res.status(200).json(order)
+    } else {
+        return res.status(404).json({ error: 'Order not found.' })
+    }
+}
+
+export const changeStatus = async (req, res) => {
+    const { status, id } = req.params
+    if (mongoose.Types.ObjectId.isValid(id) === false) {
+        return res.status(404).json({ error: 'Order not found.' })
+    }
+    const order = await OrdersModel.findOneAndUpdate({ _id: id }, { status })
+    if (order) {
+        res.status(200).json(`Status ${status} changed`)
     } else {
         return res.status(404).json({ error: 'Order not found.' })
     }

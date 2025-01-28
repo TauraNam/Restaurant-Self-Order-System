@@ -9,4 +9,7 @@ router.post('/', controller.createOrder)
 router.put('/:id', controller.updateOrder)
 router.delete('/:id', controller.deleteOrder)
 
+// status change
+router.post('/:status/:id', controller.changeStatus)
+
 export default router
