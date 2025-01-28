@@ -1,3 +1,5 @@
+import CartCard from "./CartCard";
+
 const Cart = ({ isCartOpen, toggleCart, cart, emptyCart, clearCartProduct }) => {
 
     const calculateTotalAmount = () => {
@@ -10,6 +12,34 @@ const Cart = ({ isCartOpen, toggleCart, cart, emptyCart, clearCartProduct }) => 
 
     const totalAmount = calculateTotalAmount();
 
+    const placeOrder = () => {
+        const order = {
+            tableNumber: 12,
+            products: cart.map((product) => {
+                return {
+                    "product": product._id,
+                    "quantity": product.quantity
+                }
+            }),
+            orderPrice: totalAmount,
+            notes: document.querySelector('#notes').value,
+            status: "Pending"
+        }
+
+
+        fetch('/api/orders', {
+            method: 'POST',
+            body: JSON.stringify(order),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response')
+        })
+        .catch(err => console.log('Error during fetch', err))
+    }
+
     return (
         <div className={`cart ${isCartOpen ? 'open' : ''}`}>
             <div className="cart-content">
@@ -17,15 +47,18 @@ const Cart = ({ isCartOpen, toggleCart, cart, emptyCart, clearCartProduct }) => 
                 {cart.length === 0 ? (
                     <p>Your cart is empty</p>
                 ) : (
-                    cart.map((item, index) => (
-
-                        <div key={index} className="cart-content-details">
-                            <img src={`http://localhost:4000/uploads/${item.imagePath}`} alt="product"></img>
-                            <p className="cart-title">{item.quantity > 1 ? `${item.quantity} x` : ''} {item.title}</p>
-                            <p className="cart-price">{item.price} €</p>
-                            <button className="cart-clear-item-button" onClick={() => clearCartProduct(item._id)}>x</button>
-                        </div>
-                    ))
+                    cart.map((item, index) => {
+                        const button = (
+                            <button className="cart-clear-item-button"
+                                onClick={() => clearCartProduct(item._id)}>
+                                    x
+                            </button>
+                        );
+                    
+                        return (
+                            <CartCard key={index} item={item} button={button} />
+                        );
+                    })
                 )}
                 <div className="cart-buttons">
                     <button className="empty-cart-button" onClick={emptyCart}>Empty Cart</button>
@@ -35,7 +68,8 @@ const Cart = ({ isCartOpen, toggleCart, cart, emptyCart, clearCartProduct }) => 
                     <p>Total Amount: </p>
                     <p>{totalAmount.toFixed(2)} € </p>
                 </div>
-                <button className="checkout-cart-button">Checkout</button>
+                <textarea id="notes" placeholder="Add your notes (optional)" rows="4" cols="40" />
+                <button className="checkout-cart-button" onClick={placeOrder}>Place Order</button>
             </div>
         </div>
     );
