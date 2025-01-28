@@ -20,6 +20,10 @@ const userSchema = new Schema({
     surname: {
         type: String,
         required: true
+    },
+    role: {
+        type: Array,
+        required: true
     }
 }, { timestamps: true })
 
