@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import RestaurantHeader from "../../components/Restaurant/RestaurantHeader.jsx"
 import './Restaurant.css'
 import Cart from "../../components/Restaurant/Cart.jsx"
+import CategoriesList from "../../components/Restaurant/CategoriesList.jsx"
 
 
 const MainProductsOverview = () => {
@@ -35,22 +36,20 @@ const MainProductsOverview = () => {
         try {
             let cartData = JSON.parse(localStorage.getItem('cart')) || []
 
-            const existingProductIndex = cartData.findIndex(item => item._id === product._id);
+            const existingProductIndex = cartData.findIndex(item => item._id === product._id)
         
             if (existingProductIndex > -1) {
                 cartData[existingProductIndex].quantity += 1;
             } else {
                 product.quantity = 1;
-                cartData.push(product);
+                cartData.push(product)
             }
 
             localStorage.setItem('cart', JSON.stringify(cartData))
 
-            setCart(cartData);
-            //   setErrorMessage('')
+            setCart(cartData)
         } catch (err) {
             console.log('Error during fetch', err)
-            //   setErrorMessage('Login error')
         }
     }
 
@@ -80,6 +79,7 @@ const MainProductsOverview = () => {
     return (
         <div>
             <RestaurantHeader toggleCart={toggleCart} />
+            <CategoriesList />
             <div className="products-overview">
                 <h2>Products</h2>
                 <div className="products-container">
