@@ -1,10 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
 import { MdDeleteOutline } from "react-icons/md"
+import { FaTimes, FaCheck } from "react-icons/fa"
+import { IoMdDoneAll } from "react-icons/io";
+import { FaClockRotateLeft } from "react-icons/fa6";
+import OrderStatusFilter from "./OrderStatusFilter";
+
 
 
 const Orders = ({ user }) => {
 
-    const [orders, setOrders] = useState([]);
+    const [orders, setOrders] = useState([])
+    const [activeStatus, setActiveStatus] = useState("All")
+    const [filteredOrders, setFilteredOrders] = useState([])
 
     const getOrders = () => {
         fetch('/api/orders')
@@ -22,6 +29,18 @@ const Orders = ({ user }) => {
         getOrders()
     }, [])
 
+    const filterOrdersByActiveStatus = () => {
+        if (activeStatus === 'All') {
+            setFilteredOrders(orders)
+        } else {
+            setFilteredOrders(orders.filter(item => item.status === activeStatus))
+        }  
+    }
+
+    useEffect(() => {
+        filterOrdersByActiveStatus()
+    }, [orders, activeStatus])
+
 
     const handleDelete = (orderId) => {
         fetch('/api/orders/' + orderId, { method: 'DELETE' })
@@ -35,43 +54,96 @@ const Orders = ({ user }) => {
             .catch(err => console.log('Error during delete', err))
     }
 
-    return (
-        <>
-            <div className="table-container">
-                <div className="buttons-container">
-                    {/* <Link to="/admin/orders/addOrder" className="button-styles">Add new order</Link> */}
-                </div>
-                <table className="table-overview">
-                    <thead>
-                        <tr>
-                            <th>Table Number</th>
-                            <th>Products</th>
-                            <th>Timestamp</th>
-                            <th>Actions</th>
+    const handleStatusChange = (orderId, status) => {
+        fetch('/api/orders/' + status + "/" + orderId, { method: 'POST' })
+            .then(response => {
+                if (!response.ok) throw new Error('Cannot change status.')
+            })
+            .then(() => {
+                setOrders(prevOrders => prevOrders.map(order => {
+                    if (order._id === orderId) {
+                        order.status = status
+                    }
+
+                    return order
+                }))
+            })
+            .catch(err => console.log('Error during change status', err))
+    }
+
+    const renderStatusIcon = (order) => {
+        switch (order.status) {
+          case 'Pending':
+            return (
+                <>
+                    <FaCheck className="action-icon" onClick={() => handleStatusChange(order._id, 'Approved')} />
+                    <FaTimes className="action-icon" onClick={() => handleStatusChange(order._id, 'Declined')} />
+                </>
+                );
+          case 'Approved':
+            return (
+                <>
+                    <FaClockRotateLeft className="action-icon" onClick={() => handleStatusChange(order._id, 'In-process')} />
+                    <FaTimes className="action-icon" onClick={() => handleStatusChange(order._id, 'Declined')} />
+                </>
+                );
+          case 'In-process':
+            return (
+                <>
+                    <IoMdDoneAll className="action-icon" onClick={() => handleStatusChange(order._id, 'Completed')} />
+                    <FaTimes className="action-icon" onClick={() => handleStatusChange(order._id, 'Declined')} />
+                </>
+                );
+          default:
+            return null;
+        }
+      };
+    
+
+
+return (
+        <div className="table-container"> 
+            <OrderStatusFilter activeStatus={activeStatus} setActiveStatus={setActiveStatus} />
+            <table className="table-overview">
+                <thead>
+                    <tr>
+                        <th>Table Number</th>
+                        <th>Time</th>
+                        <th>Notes</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filteredOrders && filteredOrders.map((order, index) => {
+                        return <tr key={index}>
+                            <td>{order.tableNumber}</td>
+                            <td>{
+                                new Date(order.createdAt).toLocaleTimeString('lt-LT', {
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                }) + " " + new Date(order.createdAt).toLocaleDateString()
+                            }
+                            </td>
+                            <td>
+                                {order.notes ? <FaCheck className="icon-yes" /> : <FaTimes className="icon-no" />}
+                            </td>
+                            <td>
+                                <span className={`status-label ${order.status === 'Pending' ? 'status-pending' : order.status === 'Approved' ? 'status-approved' : order.status === 'Declined' ? 'status-declined' : order.status === 'In-process' ? 'status-in-process' : 'status-completed'
+                                    }`}>
+                                    {order.status}
+                                </span>
+                            </td>
+                            <td className="table-actions">
+                                {renderStatusIcon(order)}
+                                <MdDeleteOutline onClick={() => handleDelete(order._id)} className="action-icon" />
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {orders && orders.map((order, index) => {
-                            return <tr key={index}>
-                                <td>{order.tableNumber}</td>
-                                <td>
-                                    {order.products.map((item, index) => (
-                                        <div key={index}>
-                                            {item.product.name} - {item.quantity} 
-                                        </div>
-                                    ))}
-                                    </td>
-                                <td>{new Date(order.timestamps).toLocaleDateString()}</td>
-                                <td className="table-actions">
-                                    <MdDeleteOutline onClick={() => handleDelete(order._id)} className="action-icon" />
-                                </td>
-                            </tr>
-                        })}
-                    </tbody>
-                </table>
-            </div>
-        </>
-    );
+                    })}
+                </tbody>
+            </table>
+        </div>
+);
 }
 
 export default Orders;
