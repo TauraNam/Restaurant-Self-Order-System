@@ -1,4 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
 /* AdminHeader */
+
 
 .admin-header {
     width: 100%;
@@ -23,7 +30,7 @@
     background-color: #1a1a1a;
 }
 
-/* Login, AddNewProduct, AddNewUser, ProductsEditForm, UsersEditForm */
+/* Login, AddNewProduct, AddNewUser, ProductsEditForm, UsersEditForm, CategoriesEditForm */
 
 .login-form-container {
     display: flex;
@@ -115,7 +122,20 @@ header input:focus {
     font-style: italic;
 }
 
+.edit-image-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
 
+.edit-image {
+    width: 200px;
+}
+
+.edit-image-container button {
+    width: 30px;
+    height: 30px;
+}
 /* AdminPanel */
 
 .admin-panel-container {
@@ -313,3 +333,4 @@ header input:focus {
   .active {
     background-color: #3c184a;
   }
+

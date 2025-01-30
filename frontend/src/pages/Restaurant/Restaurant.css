@@ -1,8 +1,11 @@
-/* RestaurantHeader */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500;700;900&display=swap');
 
 body {
-  background-color: #fff;
+    font-family: 'Roboto', sans-serif;
+    background-color: #fff;
 }
+
+/* RestaurantHeader */
 
 .restaurant-header {
   width: 100%;
@@ -291,4 +294,42 @@ body {
   border: 1px solid #f5f5f5;
   padding: 30px 20px;
   border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.restaurant-category-link img {
+  width: 100px;
+}
+
+/* OrderDetails */
+
+.order-details-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  background-color: #fcf8f2a0;
+  height: 100vh; 
+  max-width: 1000px;
+  box-shadow: 0 4px 8px #d7ccbca0; 
+  border-radius: 10px; 
+}
+
+.cart-additional-details {
+  font-size: 18px;
+  margin: 10px 0;
+  font-weight: 500;
+  color: #4b4b4b;
+}
+.cart-additional-details + .cart-additional-details {
+  border-top: 1px solid #ddd; 
+  padding-top: 10px;
+}
+
+.cart-additional-details:last-child {
+  font-weight: 700;
 }
