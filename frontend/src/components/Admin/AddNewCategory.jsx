@@ -8,14 +8,17 @@ const AddNewCategory = ({ user }) => {
         const elements = e.target.elements
         const title = elements.title.value.trim()
         const sortingOrder = elements.sortingOrder.value.trim()
-        const imagePath = elements.imagePath.value.trim()
+        const image = elements.image.files[0]
+
+        const formData = new FormData()
+        formData.append("title", title)
+        formData.append("sortingOrder", sortingOrder)
+        formData.append("image", image)
+
 
         fetch('/api/categories/', {
             method: 'POST',
-            body: JSON.stringify({ title, sortingOrder, imagePath }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            body: formData,
         })
             .then(response => {
                 if (!response.ok) throw new Error('Network response')
@@ -35,7 +38,7 @@ return (
                 <label htmlFor="sortingOrder">Sorting order</label>
                 <input type="number" name="sortingOrder" id="sortingOrder" required />
                 <label htmlFor="image">Image</label>
-                <input type="text" name="imagePath" id="image" required />
+                <input type="file" name="image" id="image" required />
                 <button type="submit" className="button-styles">Add new category</button>
             </form>
         </div>

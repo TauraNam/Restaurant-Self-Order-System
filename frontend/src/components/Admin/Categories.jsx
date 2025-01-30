@@ -42,18 +42,20 @@ const Categories = ({ user }) => {
             <table className="table-overview">
                 <thead>
                     <tr>
+                        <th>Image</th>
                         <th>Title</th>
                         <th>Sorting Order</th>
-                        {/* <th>Image</th> */}
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {categories && categories.map((category, index) => {
                         return <tr key={index}>
+                            <td>
+                                <img src={`http://localhost:4000/uploads/${category.imagePath}`} alt="product"></img>
+                            </td>
                             <td>{category.title}</td>
                             <td>{category.sortingOrder}</td>
-                            {/* <td>{category.imagePath}</td> */}
                             <td className="table-actions">
                                 <MdDeleteOutline onClick={() => handleDelete(category._id)} className="action-icon" />
                                 <Link to={"/admin/categories/edit/" + category._id}>

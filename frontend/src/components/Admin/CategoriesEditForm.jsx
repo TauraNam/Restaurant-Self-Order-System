@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { MdDeleteOutline } from "react-icons/md"
 import { useNavigate, useParams } from "react-router-dom"
 
 
@@ -22,7 +23,6 @@ const CategoriesEditForm = () => {
     
         useEffect(() => {
             getCategories()
-            console.log(categories)
         }, [])
 
 
@@ -31,7 +31,7 @@ const CategoriesEditForm = () => {
             const elements = e.target.elements
             const title = elements.title.value.trim()
             const sortingOrder = elements.sortingOrder.value.trim()
-            const image = elements.image.value.trim()
+            const image = elements.image.files[0]
     
             const formData = new FormData()
             formData.append("title", title)
@@ -40,10 +40,7 @@ const CategoriesEditForm = () => {
     
             fetch('/api/categories/' + id, {
                 method: 'PUT',
-                body: JSON.stringify({ title, sortingOrder, image }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                body: formData
             })
                 .then(response => {
                     if (!response.ok) throw new Error('Network response')
@@ -64,6 +61,10 @@ const CategoriesEditForm = () => {
             .catch(err => console.log('Error during delete', err))
         }
 
+        const handleImageDelete = (imagePath) => {
+            console.log(categories)
+        }
+
     return ( 
         <div className="form-container">
             <div className="form-styles">
@@ -74,7 +75,13 @@ const CategoriesEditForm = () => {
                     <label htmlFor="sortingOrder">Sorting Order</label>
                     <input type="number" name="sortingOrder" id="sortingOrder" defaultValue={categories.sortingOrder} required />
                     <label htmlFor="image">Image</label>
-                    <input type="text" name="image" id="image" defaultValue={categories.imagePath} required />
+                    <input type="file" name="image" id="image" defaultValue={categories.imagePath} required />
+                            <div className="edit-image-container">
+                                            <img src={`http://localhost:4000/uploads/${categories.imagePath}`} alt="product" className="edit-image"></img>
+                                            <button className="table-actions">
+                                                <MdDeleteOutline onClick={() => handleImageDelete(categories.imagePath)} className="action-icon" />
+                                            </button>                  
+                                        </div>
                     <button type="submit" className="button-styles">Update</button>
                     <button onClick={() => handleDelete(product._id)} className="button-styles">Delete</button>
                 </form>
