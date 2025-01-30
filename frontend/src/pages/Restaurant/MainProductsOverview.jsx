@@ -10,6 +10,8 @@ const MainProductsOverview = () => {
     const [isCartOpen, setIsCartOpen] = useState(false)
     const [products, setProducts] = useState([])
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')) || [])
+    const [activeCategory, setActiveCategory] = useState("All")
+    const [filteredProducts, setFilteredProducts] = useState([])
 
     const toggleCart = () => {
         setIsCartOpen(!isCartOpen)
@@ -31,6 +33,20 @@ const MainProductsOverview = () => {
     useEffect(() => {
         getProducts()
     }, [])
+
+
+    const filterProductsByActiveCategory = () => {
+        if (activeCategory === 'All') {
+            setFilteredProducts(products)
+        } else {
+            setFilteredProducts(products.filter(item => item.category === activeCategory._id))
+        }  
+    }
+
+    useEffect(() => {
+        filterProductsByActiveCategory()
+    }, [products, activeCategory])
+
 
     const addToCart = (product) => {
         try {
@@ -79,11 +95,11 @@ const MainProductsOverview = () => {
     return (
         <div>
             <RestaurantHeader toggleCart={toggleCart} />
-            <CategoriesList />
+            <CategoriesList activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
             <div className="products-overview">
                 <h2>Products</h2>
                 <div className="products-container">
-                    {products && products.map((product, index) => {
+                    {filteredProducts && filteredProducts.map((product, index) => {
                         return <div key={index} product={product} className="products">
                             <img src={`http://localhost:4000/uploads/${product.imagePath}`} alt="product"></img>
                 

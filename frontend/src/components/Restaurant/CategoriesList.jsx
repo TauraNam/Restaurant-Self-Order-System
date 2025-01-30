@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
-const CategoriesList = () => {
+const CategoriesList = ({activeCategory, setActiveCategory}) => {
 
     const [categories, setCategories] = useState([])
 
@@ -21,14 +21,21 @@ const CategoriesList = () => {
         getCategories()
     }, [])
 
+    const handleStatusChange = (category) => {
+        setActiveCategory(category)
+      }
+
+
     return (
         <div className="restaurant-categories">
             <div>
-                    <Link to={`/#All`} className="restaurant-category-link" >All</Link>
+                    <button className="restaurant-category-link" onClick={() => handleStatusChange("All")} >All</button>
                 </div>
             {categories && categories.map((category, index) => (
                 <div key={index}>
-                    <Link to={`/#${category.title}`} className="restaurant-category-link" >{category.title}</Link>
+                    <button className="restaurant-category-link"  onClick={() => handleStatusChange(category)} >{category.title}
+                    <img src={`http://localhost:4000/uploads/${category.imagePath}`} alt="product"></img>
+                    </button>
                 </div>
             ))}
         </div>
