@@ -1,4 +1,4 @@
-const CartCard = ({button, item}) => {console.log(item)
+const CartCard = ({button, item}) => {
     return (
         <div className="cart-content-details">
             <img src={`http://localhost:4000/uploads/${item.imagePath}`} alt="product"></img>
