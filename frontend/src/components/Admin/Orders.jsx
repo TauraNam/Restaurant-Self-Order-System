@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { MdDeleteOutline } from "react-icons/md"
 import { FaTimes, FaCheck } from "react-icons/fa"
 import { IoMdDoneAll } from "react-icons/io";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import OrderStatusFilter from "./OrderStatusFilter";
 
-
-
 const Orders = ({ user }) => {
-
     const [orders, setOrders] = useState([])
+    const [expandedOrders, setExpandedOrders] = useState([]);
     const [activeStatus, setActiveStatus] = useState("All")
     const [filteredOrders, setFilteredOrders] = useState([])
 
@@ -29,7 +27,17 @@ const Orders = ({ user }) => {
         getOrders()
     }, [])
 
+    const toggleDetails = (orderId) => {
+        setExpandedOrders((prev) => {
+            const updated = prev.includes(orderId)
+                ? prev.filter((id) => id !== orderId)
+                : [...prev, orderId];
+            return updated;
+        });
+    };
+
     const filterOrdersByActiveStatus = () => {
+        console.log(expandedOrders)
         if (activeStatus === 'All') {
             setFilteredOrders(orders)
         } else {
@@ -40,7 +48,6 @@ const Orders = ({ user }) => {
     useEffect(() => {
         filterOrdersByActiveStatus()
     }, [orders, activeStatus])
-
 
     const handleDelete = (orderId) => {
         fetch('/api/orders/' + orderId, { method: 'DELETE' })
@@ -64,7 +71,6 @@ const Orders = ({ user }) => {
                     if (order._id === orderId) {
                         order.status = status
                     }
-
                     return order
                 }))
             })
@@ -73,36 +79,34 @@ const Orders = ({ user }) => {
 
     const renderStatusIcon = (order) => {
         switch (order.status) {
-          case 'Pending':
-            return (
-                <>
-                    <FaCheck className="action-icon" onClick={() => handleStatusChange(order._id, 'Approved')} />
-                    <FaTimes className="action-icon" onClick={() => handleStatusChange(order._id, 'Declined')} />
-                </>
+            case 'Pending':
+                return (
+                    <>
+                        <FaCheck className="action-icon" onClick={() => handleStatusChange(order._id, 'Approved')} />
+                        <FaTimes className="action-icon" onClick={() => handleStatusChange(order._id, 'Declined')} />
+                    </>
                 );
-          case 'Approved':
-            return (
-                <>
-                    <FaClockRotateLeft className="action-icon" onClick={() => handleStatusChange(order._id, 'In-process')} />
-                    <FaTimes className="action-icon" onClick={() => handleStatusChange(order._id, 'Declined')} />
-                </>
+            case 'Approved':
+                return (
+                    <>
+                        <FaClockRotateLeft className="action-icon" onClick={() => handleStatusChange(order._id, 'In-process')} />
+                        <FaTimes className="action-icon" onClick={() => handleStatusChange(order._id, 'Declined')} />
+                    </>
                 );
-          case 'In-process':
-            return (
-                <>
-                    <IoMdDoneAll className="action-icon" onClick={() => handleStatusChange(order._id, 'Completed')} />
-                    <FaTimes className="action-icon" onClick={() => handleStatusChange(order._id, 'Declined')} />
-                </>
+            case 'In-process':
+                return (
+                    <>
+                        <IoMdDoneAll className="action-icon" onClick={() => handleStatusChange(order._id, 'Completed')} />
+                        <FaTimes className="action-icon" onClick={() => handleStatusChange(order._id, 'Declined')} />
+                    </>
                 );
-          default:
-            return null;
+            default:
+                return null;
         }
-      };
-    
+    };
 
-
-return (
-        <div className="table-container"> 
+    return (
+        <div className="table-container">
             <OrderStatusFilter activeStatus={activeStatus} setActiveStatus={setActiveStatus} />
             <table className="table-overview">
                 <thead>
@@ -115,35 +119,55 @@ return (
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredOrders && filteredOrders.map((order, index) => {
-                        return <tr key={index}>
-                            <td>{order.tableNumber}</td>
-                            <td>{
-                                new Date(order.createdAt).toLocaleTimeString('lt-LT', {
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                }) + " " + new Date(order.createdAt).toLocaleDateString()
-                            }
-                            </td>
-                            <td>
-                                {order.notes ? <FaCheck className="icon-yes" /> : <FaTimes className="icon-no" />}
-                            </td>
-                            <td>
-                                <span className={`status-label ${order.status === 'Pending' ? 'status-pending' : order.status === 'Approved' ? 'status-approved' : order.status === 'Declined' ? 'status-declined' : order.status === 'In-process' ? 'status-in-process' : 'status-completed'
-                                    }`}>
-                                    {order.status}
-                                </span>
-                            </td>
-                            <td className="table-actions">
-                                {renderStatusIcon(order)}
-                                <MdDeleteOutline onClick={() => handleDelete(order._id)} className="action-icon" />
-                            </td>
-                        </tr>
-                    })}
+                    {filteredOrders && filteredOrders.map((order, index) => (
+                        <Fragment key={index}>
+                            <tr>
+                                <td>{order.tableNumber}</td>
+                                <td>{
+                                    new Date(order.createdAt).toLocaleTimeString('lt-LT', {
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    }) + " " + new Date(order.createdAt).toLocaleDateString()
+                                }</td>
+                                <td>
+                                    {order.notes ? <FaCheck className="icon-yes" /> : <FaTimes className="icon-no" />}
+                                </td>
+                                <td>
+                                    <span className={`status-label ${order.status === 'Pending' ? 'status-pending' : order.status === 'Approved' ? 'status-approved' : order.status === 'Declined' ? 'status-declined' : order.status === 'In-process' ? 'status-in-process' : 'status-completed'}`}>
+                                        {order.status}
+                                    </span>
+                                </td>
+                                <td className="table-actions">
+                                    {renderStatusIcon(order)}
+                                    <MdDeleteOutline onClick={() => handleDelete(order._id)} className="action-icon" />
+                                    <button onClick={() => toggleDetails(order._id)}>
+                                        {expandedOrders.includes(order._id) ? "Hide more details" : "Show more details"}
+                                    </button>
+                                </td>
+                            </tr>
+
+                            {expandedOrders.includes(order._id) && order.products && order.products.length > 0 && (
+                                <tr>
+                                    <td colSpan="5">
+                                        <div>
+                                            <h4>Product List:</h4>
+                                            <ul>
+                                                {order.products.map((product, idx) => (
+                                                    <li key={idx}>
+                                                        Product ID: {product.product}, Quantity: {product.quantity}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
+                        </Fragment>
+                    ))}
                 </tbody>
             </table>
         </div>
-);
-}
+    );
+};
 
 export default Orders;
