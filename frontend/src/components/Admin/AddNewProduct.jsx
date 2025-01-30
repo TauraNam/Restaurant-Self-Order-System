@@ -70,7 +70,7 @@ const AddNewProduct = () => {
                 <label htmlFor="description">Description</label>
                 <textarea name="description" rows="6" id="description" required />
                 <label htmlFor="price">Price</label>
-                <input type="number" name="price" id="price" required />
+                <input type="number" name="price" id="price" step="0.01" required />
                 <button type="submit" className="button-styles">Add new product</button>
             </form>
         </div>

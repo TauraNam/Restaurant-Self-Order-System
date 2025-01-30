@@ -1,5 +1,6 @@
 import { get } from "mongoose"
 import { useEffect, useState } from "react"
+import { MdDeleteOutline } from "react-icons/md"
 import { useNavigate, useParams } from "react-router-dom"
 
 const ProductEditForm = () => {
@@ -75,6 +76,9 @@ const ProductEditForm = () => {
             .catch(err => console.log('Error during delete', err))
     }
 
+    const handleImageDelete = (imagePath) => {
+        console.log(product)
+    }
 
 
     return (
@@ -87,12 +91,18 @@ const ProductEditForm = () => {
                     <label htmlFor="category">Category</label>
                     <select name="category" id="category" defaultValue='' required>
                         {categories && categories.map((category, index) => {
-                            return <option key={index} value={category._id} 
-                            selected={product.category === category._id ? true : undefined}>{category.title} </option>
+                            return <option key={index} value={category._id}
+                                selected={product.category === category._id ? true : undefined}>{category.title} </option>
                         })}
                     </select>
                     <label htmlFor="image">Image</label>
                     <input type="file" name="image" id="image" defaultValue={product.imagePath} required />
+                    <div className="edit-image-container">
+                        <img src={`http://localhost:4000/uploads/${product.imagePath}`} alt="product" className="edit-image"></img>
+                        <button className="table-actions">
+                            <MdDeleteOutline onClick={() => handleImageDelete(product.imagePath)} className="action-icon" />
+                        </button>
+                    </div>
                     <label htmlFor="description">Description</label>
                     <textarea name="description" rows="6" id="description" defaultValue={product.description} required />
                     <label htmlFor="price">Price</label>
