@@ -14,7 +14,6 @@ import AddNewCategory from "../../components/Admin/AddNewCategory"
 import CategoriesEditForm from "../../components/Admin/CategoriesEditForm"
 import Orders from "../../components/Admin/Orders"
 import './Admin.css'
-import OrderDetails from "../../components/Admin/OrderDetails"
 
 const AdminPanel = () => {
 
@@ -38,7 +37,6 @@ const AdminPanel = () => {
                     <Route path="/categories/edit/:id" element={user ? <CategoriesEditForm user={user} setUser={setUser} /> : <Navigate to="/admin/login" />} />
                     <Route path="/categories/addCategory" element={user ? <AddNewCategory user={user}/> : <Navigate to="/admin/login" />}></Route>
                     <Route path="/orders" element={user? <Orders user={user} /> : <Navigate to="/admin/login" />} />
-                    <Route path="/orders/:id" element={<OrderDetails />}/>
                 </Routes>
             </div>
         </>
