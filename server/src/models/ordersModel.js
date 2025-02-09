@@ -1,7 +1,14 @@
 import mongoose from 'mongoose'
+import mongooseSequence from 'mongoose-sequence'
 
 const Schema = mongoose.Schema
+const autoIncrement = mongooseSequence(mongoose)
+
 const orderSchema = new Schema({
+    orderId: {
+        type: Number,
+        unique: true
+    },
     tableNumber: {
         type: String,
         required: true
@@ -30,5 +37,7 @@ const orderSchema = new Schema({
         required: true
     }
 }, { timestamps: true })
+
+orderSchema.plugin(autoIncrement, { inc_field: 'orderId' })
 
 export default mongoose.model('Order', orderSchema)
