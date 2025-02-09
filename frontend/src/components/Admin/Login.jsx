@@ -1,8 +1,12 @@
 import { useState } from "react"
+import { useAuth } from '../../hooks/useAuth'
+import { useNavigate } from "react-router-dom"
 
-const Login = ({ setUser }) => {
+const Login = () => {
 
     const [errorMessage, setErrorMessage] = useState('')
+    const { login } = useAuth()
+    const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -18,21 +22,19 @@ const Login = ({ setUser }) => {
                 'Content-Type': 'application/json'
             }
         })
-            .then(async response => {
+            .then(async (response) => {
+                const data = await response.json()
+
                 if (!response.ok) {
-                    const errorData = await response.json()
-                    setErrorMessage(errorData.error || "Login failed.")
+                    setErrorMessage(data.error || "Login failed.")
+                    return
                 }
-                return response.json()
-            })
-            .then(userData => {
-                if (userData) {
-                    localStorage.setItem('user', JSON.stringify(userData))
-                    setUser(userData)
-                    setErrorMessage('')
+                if (data) {
+                    login(data.token, data.user)
+                    navigate('/admin/products')
                 }
             })
-            .catch(err => {
+            .catch((err) => {
                 console.log('Error during fetch', err)
                 setErrorMessage('Login error')
             })
@@ -53,13 +55,11 @@ const Login = ({ setUser }) => {
                     </div>
                     <button type="submit" className="button-styles">Login</button>
 
-
                     {errorMessage && (
                         <div className="error-message">
                             {errorMessage}
                         </div>
                     )}
-
                 </form>
             </div>
         </div>

@@ -1,15 +1,29 @@
-import { AiOutlineShoppingCart } from 'react-icons/ai';
+import { AiOutlineShoppingCart } from 'react-icons/ai'
+import logo from '../../assets/logo.png'
+import { useSearch } from '../../context/SearchContext'
 
+const RestaurantHeader = ({ toggleCart, cart }) => {
 
-const RestaurantHeader = ({toggleCart}) => {
+    const { searchText, setSearchText } = useSearch()
+
+    const countCartItems = () => {
+        let totalCartQuantity = 0
+
+        for (const item of cart) {
+            totalCartQuantity += item.quantity
+        }
+
+        return totalCartQuantity
+    }
+
     return (
         <header className="restaurant-header">
-            <div>Logo</div>
-            <input type="search" placeholder="Search..." />
+            <img className="logo" src={logo} alt="Asia House Logo" />
+            <input type="search" id="search" placeholder="Search..." value={searchText}
+                onChange={(e) => setSearchText(e.target.value)} />
             <div>
-            <button className="main-cart-button" onClick={toggleCart}>
-                <AiOutlineShoppingCart className="header-icon" />
-            </button>
+                {cart.length > 0 && <span className="cart-total-items">{countCartItems()}</span>}
+                <AiOutlineShoppingCart className="main-cart-button header-icon" onClick={toggleCart} />
             </div>
         </header>
     );
