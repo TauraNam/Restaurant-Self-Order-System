@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500;700;900&display=swap');
 
 :root {
   --admin-primary-color: #6f5cc3;
@@ -13,21 +14,55 @@
 }
 
 body {
-  background-color: #f7f7f7;
+  font-family: 'Roboto', sans-serif;
+  background-color: #fff;
 }
 
-.nav-icon {
-  font-size: 20px;
+/* Shared CSS */
+
+.logo {
+  width: auto;
+  height: 60px;
 }
 
-.action-icon {
-  font-size: 30px;
-  color: var(--admin-primary-color);
+/* Pagination */
+
+.pagination-button {
   cursor: pointer;
+  font-size: 25px;
 }
 
-.header-icon {
-  font-size: 40px;
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 30px 0;
+}
+
+.page-button {
+  border: none;
+  background: #f0f0f0;
+  padding: 8px 12px;
   cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
+.page-button.active {
+  background: var(--admin-selected-color);
+  color: white;
+  font-weight: bold;
+}
+
+span {
+  margin: 0 5px;
+  font-weight: bold;
+}
+
+
+/* Small screens (mobile) */
+@media (max-width: 600px) {
+  .logo {
+    height: 30px;
+  }
+}
