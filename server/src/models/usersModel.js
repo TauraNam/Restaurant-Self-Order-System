@@ -32,11 +32,10 @@ userSchema.statics.createNew = async function (email, password, name, surname) {
         throw new Error('All fields are required.')
     }
 
-    const exists = await this.findOne({ email });
+    const exists = await this.findOne({ email })
     if (exists) {
-        throw new Error('This email has already been used.');
+        throw new Error('This email has already been used.')
     }
-
 
     if (validator.isEmail(email) === false) { throw new Error('Email is not valid.') }
     if (validator.isStrongPassword(password) === false) { throw new Error('Password is too weak.') }
