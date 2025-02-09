@@ -1,6 +1,4 @@
-import { get } from "mongoose"
 import { useEffect, useState } from "react"
-import { MdDeleteOutline } from "react-icons/md"
 import { useNavigate, useParams } from "react-router-dom"
 
 const ProductEditForm = () => {
@@ -8,8 +6,9 @@ const ProductEditForm = () => {
     const { id } = useParams()
     const [product, setProduct] = useState([])
     const [categories, setCategories] = useState([])
-    const navigate = useNavigate();
-
+    const [image, setImage] = useState({ path: '', file: undefined })
+    const navigate = useNavigate()
+    const defaultImagePath = `http://localhost:4000/uploads/`
 
     const getProduct = () => {
         fetch('/api/products/' + id)
@@ -19,6 +18,7 @@ const ProductEditForm = () => {
             })
             .then(productData => {
                 setProduct(productData)
+                setImage({ path: defaultImagePath + productData.imagePath })
             })
             .catch(err => console.log('Error during fetch', err))
     }
@@ -45,7 +45,6 @@ const ProductEditForm = () => {
         const elements = e.target.elements
         const title = elements.title.value.trim()
         const category = elements.category.value
-        const image = elements.image.files[0]
         const description = elements.description.value.trim()
         const price = elements.price.value.trim()
 
@@ -54,7 +53,7 @@ const ProductEditForm = () => {
         formData.append("category", category)
         formData.append("description", description)
         formData.append("price", price)
-        formData.append("image", image)
+        formData.append("image", image.file)
 
         fetch('/api/products/' + id, {
             method: 'PUT',
@@ -62,24 +61,35 @@ const ProductEditForm = () => {
         })
             .then(response => {
                 if (!response.ok) throw new Error('Network response')
-                navigate('/admin/products');
+                navigate('/admin/products')
             })
             .catch(err => console.log('Error during fetch', err))
     }
 
     const handleDelete = (productId) => {
-        fetch('/api/products/' + productId, { method: 'DELETE' })
-            .then(response => {
-                if (!response.ok) throw new Error('Nepavyko delete')
-                navigate('/admin/products');
-            })
-            .catch(err => console.log('Error during delete', err))
+        const confirm = window.confirm("Ar you sure you want to DELETE this order?")
+        if (confirm) {
+            fetch('/api/products/' + productId, { method: 'DELETE' })
+                .then(response => {
+                    if (!response.ok) throw new Error('Nepavyko delete')
+                    navigate('/admin/products')
+                })
+                .catch(err => console.log('Error during delete', err))
+        }
     }
 
-    const handleImageDelete = (imagePath) => {
-        console.log(product)
+    const handleImageChange = (e) => {
+        const file = e.target.files[0]
+
+        if (file) {
+            const imageUrl = URL.createObjectURL(file)
+            setImage({ path: imageUrl, file })
+        }
     }
 
+    const handleImageCancel = () => {
+        setImage({ path: defaultImagePath + product.imagePath, file: undefined })
+    }
 
     return (
         <div className="form-container">
@@ -96,19 +106,25 @@ const ProductEditForm = () => {
                         })}
                     </select>
                     <label htmlFor="image">Image</label>
-                    <input type="file" name="image" id="image" defaultValue={product.imagePath} required />
+                    <input type="file" name="image" id="image" onChange={handleImageChange} />
                     <div className="edit-image-container">
-                        <img src={`http://localhost:4000/uploads/${product.imagePath}`} alt="product" className="edit-image"></img>
-                        <button className="table-actions">
-                            <MdDeleteOutline onClick={() => handleImageDelete(product.imagePath)} className="action-icon" />
-                        </button>
+                        {image && (
+                            <img
+                                src={image.path}
+                                alt="product"
+                                className="edit-image"
+                            />
+                        )}
+                        {image.path !== defaultImagePath + product.imagePath && (
+                            <button type="button" onClick={handleImageCancel}>Cancel</button>
+                        )}
                     </div>
                     <label htmlFor="description">Description</label>
                     <textarea name="description" rows="6" id="description" defaultValue={product.description} required />
                     <label htmlFor="price">Price</label>
-                    <input type="number" name="price" id="price" defaultValue={product.price} required />
+                    <input type="number" name="price" id="price" step="0.01" defaultValue={product.price} required />
                     <button type="submit" className="button-styles">Update</button>
-                    <button onClick={() => handleDelete(product._id)} className="button-styles">Delete</button>
+                    <button type="button" onClick={() => handleDelete(product._id)} className="button-styles">Delete</button>
                 </form>
             </div>
         </div>

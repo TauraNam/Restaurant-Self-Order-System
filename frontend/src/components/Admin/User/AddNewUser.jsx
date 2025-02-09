@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 
-const AddNewUser = ({ user }) => {
+const AddNewUser = () => {
 
     const navigate = useNavigate()
 
@@ -13,8 +13,8 @@ const AddNewUser = ({ user }) => {
         const surname = elements.surname.value.trim()
 
         if (!email || !password || !name || !surname) {
-            alert("Please fill all fields.");
-            return;
+            alert("Please fill all fields.")
+            return
         }
         fetch('/api/users/', {
             method: 'POST',
@@ -25,7 +25,7 @@ const AddNewUser = ({ user }) => {
         })
             .then(response => {
                 if (!response.ok) throw new Error('Network response')
-                navigate('/admin/users');
+                navigate('/admin/users')
             })
             .catch(err => console.log('Error during fetch', err))
     }

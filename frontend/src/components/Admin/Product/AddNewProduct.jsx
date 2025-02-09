@@ -2,10 +2,9 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 const AddNewProduct = () => {
+
     const navigate = useNavigate()
-
     const [categories, setCategories] = useState([])
-
 
     const handleAddNewProduct = (e) => {
         e.preventDefault()
@@ -29,7 +28,7 @@ const AddNewProduct = () => {
         })
             .then(response => {
                 if (!response.ok) throw new Error('Network response')
-                navigate('/admin/products');
+                navigate('/admin/products')
             })
             .catch(err => console.log('Error during fetch', err))
     }
@@ -50,7 +49,6 @@ const AddNewProduct = () => {
         getCategories()
     }, [])
 
-
     return (
         <div className="form-container">
             <div className="form-styles">
@@ -60,20 +58,19 @@ const AddNewProduct = () => {
                     <input type="text" name="title" id="title" required />
                     <label htmlFor="category">Category</label>
                     <select name="category" id="category" required>
-                    {categories && categories.map((category, index) => {
-                        return <option key={index} value={category._id}>{category.title} </option>
-                    })}
-                </select>
-
-                <label htmlFor="image">Image</label>
-                <input type="file" name="image" id="image" required />
-                <label htmlFor="description">Description</label>
-                <textarea name="description" rows="6" id="description" required />
-                <label htmlFor="price">Price</label>
-                <input type="number" name="price" id="price" step="0.01" required />
-                <button type="submit" className="button-styles">Add new product</button>
-            </form>
-        </div>
+                        {categories && categories.map((category, index) => {
+                            return <option key={index} value={category._id}>{category.title} </option>
+                        })}
+                    </select>
+                    <label htmlFor="image">Image</label>
+                    <input type="file" name="image" id="image" required />
+                    <label htmlFor="description">Description</label>
+                    <textarea name="description" rows="6" id="description" required />
+                    <label htmlFor="price">Price</label>
+                    <input type="number" name="price" id="price" step="0.01" required />
+                    <button type="submit" className="button-styles">Add new product</button>
+                </form>
+            </div>
         </div >
     );
 }
