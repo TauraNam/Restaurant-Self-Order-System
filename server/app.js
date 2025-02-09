@@ -20,8 +20,8 @@ app.use('/api/users', usersRoutes)
 app.use('/api/categories', categoriesRoutes)
 app.use('/api/orders', ordersRoutes)
 
-const uploadsPath = path.resolve('uploads');
-app.use('/uploads', express.static(uploadsPath));
+const uploadsPath = path.resolve('uploads')
+app.use('/uploads', express.static(uploadsPath))
 
 mongoose.connect(process.env.URI)
     .then(() => {
@@ -30,3 +30,4 @@ mongoose.connect(process.env.URI)
         })
     })
     .catch(err => console.log(err))
+
