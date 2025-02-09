@@ -6,11 +6,32 @@ const checkProductsExist = async (products) => {
     const productsToFind = products.map(item => item.product)
     const foundProducts = await productsModel.find({ '_id': { $in: productsToFind } })
     return foundProducts.length === productsToFind.length
-};
+}
 
 export const getOrders = async (req, res) => {
-    const orders = await OrdersModel.find()
-    res.status(200).json(orders)
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 10
+    const skip = (page - 1) * limit
+    const status = req.query.status
+
+    try {
+        const query = status ? { status } : {}
+
+        const totalOrders = await OrdersModel.countDocuments(query)
+
+        const orders = await OrdersModel.find(query)
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 })
+
+        res.status(200).json({
+            orders,
+            totalOrders,
+            totalPages: Math.ceil(totalOrders / limit)
+        })
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' })
+    }
 }
 
 export const getOrder = async (req, res) => {
@@ -29,7 +50,7 @@ export const getOrder = async (req, res) => {
 export const createOrder = async (req, res) => {
     const { tableNumber, products, notes, orderPrice, status } = req.body
 
-    let emptyFields = [];
+    let emptyFields = []
     if (!tableNumber) { emptyFields.push('tableNumber') }
     if (!products || products.length === 0) { emptyFields.push('products') }
     if (!orderPrice) { emptyFields.push('orderPrice') }
@@ -66,7 +87,7 @@ export const createOrder = async (req, res) => {
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
-};
+}
 
 
 export const updateOrder =
